@@ -4,13 +4,19 @@ import { Connector, useConnect } from "wagmi";
 export function WalletOptions() {
   const { connectors, connect } = useConnect();
 
-  return connectors.map((connector) => (
-    <WalletOption
-      key={connector.uid}
-      connector={connector}
-      onClick={() => connect({ connector })}
-    />
-  ));
+  return (
+    <>
+      {connectors.map((connector) => (
+        connector.id === "io.metamask" && ( // Check for MetaMask connector ID
+          <WalletOption
+            key={connector.uid}
+            connector={connector}
+            onClick={() => connect({ connector })}
+          />
+        )
+      ))}
+    </>
+  );
 }
 
 function WalletOption({

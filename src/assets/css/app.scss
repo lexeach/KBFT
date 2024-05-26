@@ -96,9 +96,11 @@
   border-left: 1px solid $border-color;
   padding: 5px;
   width: 250px;
-  color: #0ab39c;
+  color: #ef71a7;
   font-size: 20px;
-  font-weight: 300;
+  font-weight: 400;
+  border: 4px solid $border-color;
+  background-color: #000000;
 }
 .dashboard .network-box {
   position: relative;

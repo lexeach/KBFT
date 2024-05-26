@@ -4,8 +4,8 @@ import { formatEther } from "ethers/utils";
 import {
   contract_address,
   contract_abi
-} from "../contract";
-import { config } from "../config";
+} from "../contracts/contract";
+import { config } from "../utils/config";
 
 const UserInfo = () => {
   const { address } = useAccount();

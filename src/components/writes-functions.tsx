@@ -7,24 +7,36 @@ import { simulateContract, writeContract } from "@wagmi/core";
 import {
   contract_address,
   contract_abi,
-  contract_current_admin,
   contract_address_stable_coin_usdt,
   contract_abi_stabel_coin_usdt,
   contract_address_bnb_kbc,
   contract_abi_bnb_kbc,
-  contract_price_pool
-} from "../contract";
-import { config } from "../config";
+  contract_price_pool,
+} from "../contracts/contract";
+import { config } from "../utils/config";
 
 import { check_usd_price } from "../utils/convert-to-eth";
+import AllReadInfo from "./all-read-fun";
 
 const WriteAbleFun = () => {
+  const { address } = useAccount();
   // const [withDrawlVal, setWithDrawalVal] = useState(0);
   // const [withDrawlROI, setWithDrawalROI] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [kbcVal, setKbcVal] = useState<number>(1);
   const [usdVal, setUsdVal] = useState<string>("");
   const [nodeQ_val, setNodeQ_val] = useState<number>(1);
+  const [nodePrice, setNodePrice] = useState<number>(100);
+
+
+  const nodePrice_ = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "nodePrice",
+    // args: [address],
+    config,
+  });
+
 
   const ownerWallet = useReadContract({
     abi: contract_abi,
@@ -33,15 +45,17 @@ const WriteAbleFun = () => {
     // args: [address],
     config,
   });
-  console.log("ownerWallet", ownerWallet.data);
+  // console.log("ownerWallet >> ", ownerWallet.data);
 
   useEffect(() => {
-    if (ownerWallet.data === contract_current_admin) {
+    const currentNodePrice = Number(nodePrice_.data)
+    setNodePrice(currentNodePrice)
+    if (address && ownerWallet.data === address) {
       setIsOwner(true);
     }
-  });
+  },[]);
 
-  const { address } = useAccount();
+
   const formItemLayout = {
     labelCol: { span: 24 },
     wrapperCol: { span: 24 },
@@ -53,7 +67,6 @@ const WriteAbleFun = () => {
     const nodeVal = inputVal * Number(usdVal);
     setNodeQ_val(nodeVal);
   };
-
 
   const BalanceOfKBC = useReadContract({
     abi: contract_abi_bnb_kbc,
@@ -71,7 +84,6 @@ const WriteAbleFun = () => {
     config,
   });
 
-
   const USD_price = check_usd_price(
     BalanceOfKBC.data as bigint,
     BalanceOfStableCoin.data as bigint
@@ -80,19 +92,6 @@ const WriteAbleFun = () => {
     setUsdVal(USD_price.toString());
   }, [BalanceOfKBC.data, BalanceOfStableCoin.data]);
 
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const inputVal = parseInt(event.target.value, 10);
-  //   setKbcVal(isNaN(inputVal) ? 0 : inputVal);
-  // };
-
-  // const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   const charCode = event.which ? event.which : event.keyCode;
-  //   if (charCode < 48 || charCode > 57) {
-  //     event.preventDefault();
-  //   }
-  // };
-
   // register function start
   type RegistrationValues = {
     nodeQuantity: string;
@@ -100,14 +99,16 @@ const WriteAbleFun = () => {
   };
 
   const onFinishReg = async (values: RegistrationValues) => {
-    console.log("values", values);
+
+    const payableVal = Number(usdVal) * kbcVal;
+    const node_quantity = kbcVal / 100;
 
     const { request } = await simulateContract(config, {
       abi: contract_abi,
       address: contract_address,
       functionName: "Registration",
-      args: [values.referralId, values.nodeQuantity],
-      value: parseEther(values.nodeQuantity),
+      args: [Number(values.referralId), node_quantity],
+      value: parseEther(payableVal.toString()),
     });
     const hash = await writeContract(config, request);
 
@@ -291,11 +292,12 @@ const WriteAbleFun = () => {
   return (
     <>
       <div className="row px-5">
+        <AllReadInfo />
         {/* Register function  */}
         <div className="col-lg-6">
           <div className="swap-wrap p-5 position-relative">
             <div className="reg-calac  top-15 text-center mb-2">
-              <div className="">
+              <div className="clac-fild-parnt">
                 <input
                   className="clac-field"
                   value={kbcVal}
@@ -307,37 +309,57 @@ const WriteAbleFun = () => {
                   {kbcVal === 1 ? usdVal : Number(usdVal) * kbcVal}
                 </span>
               </div>
-              <div className="ml-4x mt-2">
-                <span className="clr-base">1 USDT</span>{" "}
-                <span className="clr-base ml-2">=</span>
-                <span className="kbc-val">
+              <div className="ml-4x mt-2 usd-sec-reg">
+                <span className="clr-base usd-sec-st">1 USDT</span>
+                <span className="clr-base ml-2 usd-sec-se">=</span>
+                <span className="kbc-val usd-sec-rd">
                   {kbcVal === 1 ? usdVal : Number(usdVal)} KBC
                 </span>
               </div>
+              <p>
+                <span className="clr-base">Node Quantity:</span>
+                <span className="kbc-val"> {kbcVal ? kbcVal / nodePrice : 0}</span>
+              </p>
             </div>
-            <div className="swap-head text-center">Register</div>
+            <div className="swap-head text-center reg-tag">Register</div>
             <div className="swap">
               <div className="swap-box">
                 <Form
                   {...formItemLayout}
                   name="register"
                   onFinish={onFinishReg}
+                  // onFinishFailed={onFinishFailed}
                   autoComplete="off"
                 >
                   <Form.Item
-                    label="Node Quantity"
+                    label={`Node Quantity (Multiples of ${nodePrice})`}
                     name="nodeQuantity"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your nodeQuantity!",
+                        message:
+                          `Please input a valid node quantity (multiple of ${nodePrice})!`,
+                      },
+                      {
+                        validator: (rule, value) => {
+                          console.log('--', rule);
+                          
+                          if (value && value % nodePrice !== 0) {
+                            return Promise.reject(
+                              `Please enter a multiple of ${nodePrice}`
+                            );
+                          }
+                          return Promise.resolve();
+                        },
                       },
                     ]}
                     className="node-title"
                   >
                     <Input
+                      type="number"
                       className="input_filed"
                       placeholder="0"
+                      step="100"
                       value={nodeQ_val}
                       onChange={handleChange}
                     />
@@ -407,9 +429,11 @@ const WriteAbleFun = () => {
               </div>
             </div>
           </div>
-        )}
+       )}
 
         {/* Set Board Pool Address  */}
+
+        {isOwner && (
         <div className="col-lg-6">
           <div className="swap-wrap p-5">
             <div className="swap-head text-center">
@@ -446,8 +470,10 @@ const WriteAbleFun = () => {
             </div>
           </div>
         </div>
+          )}
 
         {/* set Liquidity PoolAddress */}
+        {isOwner && (
         <div className="col-lg-6">
           <div className="swap-wrap p-5">
             <div className="swap-head text-center">
@@ -484,8 +510,10 @@ const WriteAbleFun = () => {
             </div>
           </div>
         </div>
+         )}
 
         {/* set RoundCloser Address  */}
+        {isOwner && (
         <div className="col-lg-6">
           <div className="swap-wrap p-5">
             <div className="swap-head text-center">
@@ -522,8 +550,10 @@ const WriteAbleFun = () => {
             </div>
           </div>
         </div>
+        )} 
 
         {/* set global Insurance Address (0x2fc3dff0)  */}
+        {isOwner && (
         <div className="col-lg-6">
           <div className="swap-wrap p-5">
             <div className="swap-head text-center">
@@ -561,9 +591,10 @@ const WriteAbleFun = () => {
             </div>
           </div>
         </div>
+           )} 
 
         {/* withDrawal ROI  */}
-        {isOwner && (
+        {/* {isOwner && ( */}
           <div className="col-lg-6">
             <div className="swap-wrap p-5">
               <div className="swap-head text-center">Withdraw ROI</div>
@@ -581,11 +612,7 @@ const WriteAbleFun = () => {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        {/* Close Round  */}
-        {isOwner && (
-          <div className="col-lg-6">
+            {isOwner && (
             <div className="swap-wrap p-5">
               <div className="swap-head text-center">Close Round</div>
               <div className="swap h-100">
@@ -602,8 +629,8 @@ const WriteAbleFun = () => {
                 </div>
               </div>
             </div>
+               )}
           </div>
-        )}
       </div>
     </>
   );

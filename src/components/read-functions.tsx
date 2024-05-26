@@ -6,8 +6,8 @@ import { Autoplay } from "swiper/modules";
 import { useAccount, useReadContract } from "wagmi";
 import { BigNumberish } from "ethers";
 
-import { contract_address, contract_abi } from "../contract";
-import { config } from "../config";
+import { contract_address, contract_abi } from "../contracts/contract";
+import { config } from "../utils/config";
 
 import "swiper/css";
 const Slider = () => {

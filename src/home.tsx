@@ -7,8 +7,8 @@ import { parseEther } from 'viem'
 
 import { simulateContract, writeContract } from '@wagmi/core'
 
-import { contract_abi, contract_address } from "./contract";
-import { config } from "./config";
+import { contract_abi, contract_address } from "./contracts/contract";
+import { config } from "./utils/config";
 
 const Home = () => {
   const { address } = useAccount();
@@ -17,8 +17,8 @@ const Home = () => {
 
   const writeFun = async () => {
 
-    const combinedArgument = '1000000000000000'
-    console.log('combinedArgument', combinedArgument);
+    // const combinedArgument = '1000000000000000'
+    // console.log('combinedArgument', combinedArgument);
     
     const { request } = await simulateContract(config, {
         abi:contract_abi,

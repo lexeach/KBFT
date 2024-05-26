@@ -1,7 +1,7 @@
 import { useReadContract } from "wagmi";
 import dayjs from "dayjs";
 
-import { contract_abi, contract_address } from "../contract";
+import { contract_abi, contract_address } from "../contracts/contract";
 import { convert_eth_from_biginit } from "../utils/convert-to-eth";
 
 
