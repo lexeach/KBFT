@@ -9,8 +9,6 @@ import {
   contract_abi,
   contract_address_stable_coin_usdt,
   contract_abi_stabel_coin_usdt,
-  contract_address_bnb_kbc,
-  contract_abi_bnb_kbc,
   contract_price_pool,
 } from "../contracts/contract";
 import { config } from "../utils/config";
@@ -36,8 +34,7 @@ const WriteAbleFun = () => {
     // args: [address],
     config,
   });
-
-
+  
   const ownerWallet = useReadContract({
     abi: contract_abi,
     address: contract_address,
@@ -48,10 +45,17 @@ const WriteAbleFun = () => {
   // console.log("ownerWallet >> ", ownerWallet.data);
 
   useEffect(() => {
-    const currentNodePrice = Number(nodePrice_.data)
-    setNodePrice(currentNodePrice)
-    if (address && ownerWallet.data === address) {
-      setIsOwner(true);
+    if(nodePrice_.data === undefined){
+      setNodePrice(100)
+      if (address && ownerWallet.data === address) {
+        setIsOwner(true);
+      }
+    } else {
+      const currentNodePrice = Number(nodePrice_.data)
+      setNodePrice(currentNodePrice)
+      if (address && ownerWallet.data === address) {
+        setIsOwner(true);
+      }
     }
   },[]);
 
@@ -68,9 +72,9 @@ const WriteAbleFun = () => {
     setNodeQ_val(nodeVal);
   };
 
-  const BalanceOfKBC = useReadContract({
-    abi: contract_abi_bnb_kbc,
-    address: contract_address_bnb_kbc,
+  const BalanceOfKBC_WBNB = useReadContract({
+    abi: contract_abi_stabel_coin_usdt,
+    address: '0xE1e61dD8DF8bbF75935fe04Dc214c6d517fc3622',
     functionName: "balanceOf",
     args: [contract_price_pool],
     config,
@@ -84,13 +88,14 @@ const WriteAbleFun = () => {
     config,
   });
 
+
   const USD_price = check_usd_price(
-    BalanceOfKBC.data as bigint,
+    BalanceOfKBC_WBNB.data as bigint,
     BalanceOfStableCoin.data as bigint
   );
   useEffect(() => {
     setUsdVal(USD_price.toString());
-  }, [BalanceOfKBC.data, BalanceOfStableCoin.data]);
+   }, [BalanceOfKBC_WBNB.data, BalanceOfStableCoin.data]);
 
   // register function start
   type RegistrationValues = {

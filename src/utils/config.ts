@@ -3,7 +3,7 @@ import { http, createConfig } from 'wagmi'
 import { KBCTestnet } from './kbc-test.net'
 
 export const config = createConfig({
-  chains: [ KBCTestnet],
+  chains: [KBCTestnet],
   transports: {
     [KBCTestnet.id]: http(),
   },

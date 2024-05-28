@@ -1,10 +1,8 @@
 import { useAccount, useReadContract } from "wagmi";
 import { formatEther } from "ethers/utils";
-
-import {
-  contract_address,
-  contract_abi
-} from "../contracts/contract";
+import dayjs from "dayjs";
+import { BigNumberish } from "ethers";
+import { contract_address, contract_abi } from "../contracts/contract";
 import { config } from "../utils/config";
 
 const UserInfo = () => {
@@ -18,10 +16,52 @@ const UserInfo = () => {
     config,
   });
 
+
+  const directIncome = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "directIncome",
+    args: [address],
+    config,
+  });
+
+  const joiningRound = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "joiningRound",
+    args: [address],
+    config,
+  });
+
+  const regTime = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "regTime",
+    args: [address],
+    config,
+  });
+
+  const takenRound = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "takenRound",
+    args: [address],
+    config,
+  });
+
+  const withdrawableROI = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "withdrawableROI",
+    args: [address],
+    config,
+  });
+
+
   let userDetail: bigint[] = [];
   userDetail = userData?.data as bigint[];
   const userId = userDetail ? userDetail[1] : 0;
-
+  console.log("Its calling as User Info: ", userDetail);
   const userDetail_arr = [
     {
       id: "1",
@@ -71,9 +111,36 @@ const UserInfo = () => {
     {
       id: "10",
       name: "Income Missed",
-      value: userDetail ? formatEther(userDetail[10]) : 0,
+      value: userDetail && userDetail[10] > 0 ? formatEther(userDetail[10]) : 0,
     },
-    
+    {
+      id: "11",
+      name: "Direct Income",
+      value: directIncome.data ? formatEther(directIncome.data  as BigNumberish) : 0,
+    },
+    {
+      id: "12",
+      name: "Joining Round",
+      value: joiningRound.data ? joiningRound.data : 0,
+    },
+    {
+      id: "13",
+      name: "Reg Time",
+      value: regTime.data
+        ? dayjs(Number(regTime.data) * 1000).format("DD-MMM-YYYY")
+        : "00-Month-0000",
+      // value: regTime.data ? regTime.data : 0,
+    },
+    {
+      id: '14',
+      name: "Taken Round",
+      value: takenRound.data ? takenRound.data : 0,
+    },
+    {
+      id: '15',
+      name: "Withdrawable ROI",
+      value: withdrawableROI.data ? formatEther(withdrawableROI.data  as BigNumberish) : 0,
+    },
   ];
 
   const levelsIncomeRes = useReadContract({
@@ -120,106 +187,122 @@ const UserInfo = () => {
       id: 16,
       level: "Level 1",
       team: userDetail ? Number(userDetail[5]) : 0,
-      income: level1Income ? formatEther(level1Income[0].toString()) + " USDT" : 0 + " USDT",
+      income: level1Income
+        ? formatEther(level1Income[0].toString()) + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 2,
       level: "Level 2",
       team: levelsDetails ? levelsDetails[0].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[0].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[0].toString() + " USDT"
+        : 0 + " USDT",
     },
 
     {
       id: 3,
       level: "Level 3",
       team: levelsDetails ? levelsDetails[1].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[1].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[1].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 4,
       level: "Level 4",
       team: levelsDetails ? levelsDetails[2].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[2].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[2].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 5,
       level: "Level 5",
       team: levelsDetails ? levelsDetails[3].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[3].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[3].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 6,
       level: "Level 6",
       team: levelsDetails ? levelsDetails[4].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[4].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[4].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 7,
       level: "Level 7",
       team: levelsDetails ? levelsDetails[5].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[5].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[5].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 8,
       level: "Level 8",
       team: levelsDetails ? levelsDetails[6].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[6].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[6].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 9,
       level: "Level 9",
       team: levelsDetails ? levelsDetails[7].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[7].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[7].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 10,
       level: "Level 10",
       team: levelsDetails ? levelsDetails[8].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[8].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[8].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 11,
       level: "Level 11",
       team: levelsDetails ? levelsDetails[9].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[9].toString() + " USDT" : 0 + " USDT"
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[9].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 12,
       level: "Level 12",
       team: levelsDetails ? levelsDetails[10].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[10].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[10].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 13,
       level: "Level 13",
       team: levelsDetails ? levelsDetails[11].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[11].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[11].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 14,
       level: "Level 14",
       team: levelsDetails ? levelsDetails[12].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[12].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[12].toString() + " USDT"
+        : 0 + " USDT",
     },
     {
       id: 15,
       level: "Level 15",
       team: levelsDetails ? levelsDetails[13].toString() : 0,
-      income:
-        levelsIncomeDetails ? levelsIncomeDetails[13].toString() + " USDT" : 0 + " USDT",
+      income: levelsIncomeDetails
+        ? levelsIncomeDetails[13].toString() + " USDT"
+        : 0 + " USDT",
     },
   ];
 
@@ -242,7 +325,7 @@ const UserInfo = () => {
             ))}
           </div>
         </div>
-    
+
         {/* KBC User Level info */}
         <div className="col-lg-6">
           <div className="d-flex justify-content-center mt-4">

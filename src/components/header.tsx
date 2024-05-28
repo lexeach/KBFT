@@ -49,11 +49,11 @@ const Header = () => {
   });
 
 
-  // const nodePrice = useReadContract({
-  //   abi: contract_abi,
-  //   address: contract_address,
-  //   functionName: "nodePrice",
-  // });
+  const nodePrice = useReadContract({
+    abi: contract_abi,
+    address: contract_address,
+    functionName: "nodePrice",
+  });
 
 
   interface BalanceDetail {
@@ -77,8 +77,8 @@ const Header = () => {
       name: "Current Round",
     },
     {
-      value:
-        dayjs(Number(currRoundStartTime.data) * 1000).format("DD-MMM-YYYY") ||
+      value:currRoundStartTime.data ?
+        dayjs(Number(currRoundStartTime.data) * 1000).format("DD-MMM-YYYY") :
         "00-Month-0000",
       name: "Round Start Time",
     },
@@ -106,8 +106,8 @@ const Header = () => {
           : 0,
       name: "Daily Reward",
     }, {
-      value:
-        dayjs(Number(endTime.data) * 1000).format("DD-MMM-YYYY") ||
+      value: endTime.data ?
+        dayjs(Number(endTime.data) * 1000).format("DD-MMM-YYYY") :
         "00-Month-0000",
       name: "End Time",
     },
@@ -118,14 +118,14 @@ const Header = () => {
           : 0,
       name: "Sold Node",
     }
-    // ,
-    // {
-    //   value:
-    //     nodePrice && typeof nodePrice.data === "bigint"
-    //       ? Number(nodePrice.data.toString())
-    //       : 0,
-    //   name: "Node Price",
-    // }
+    ,
+    {
+      value:
+        nodePrice && typeof nodePrice.data === "bigint"
+          ? Number(nodePrice.data.toString())
+          : 0,
+      name: "Node Price",
+    }
   ];
 
   return (
@@ -148,7 +148,7 @@ const Header = () => {
       <div className="head-card skew mx-5 mt-4">
         <div className="row">
           {Header_Two.map((element: BalanceDetail, i) => (
-            <div className="col-lg-4 col-sm-6" key={i}>
+            <div className="col-lg-3 col-sm-6" key={i}>
               <div className="box">
                 <p className="cards-numbers">{element?.value?.toString()}</p>
                 <p className="cards-title">{element?.name}</p>

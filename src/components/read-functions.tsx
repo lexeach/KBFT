@@ -91,17 +91,17 @@ const Slider = () => {
     : 0;
 
   // function 23
-  const withdrawableROI = useReadContract({
-    abi: contract_abi,
-    address: contract_address,
-    functionName: "withdrawableROI",
-    args: [address],
-    config,
-  });
+  // const withdrawableROI = useReadContract({
+  //   abi: contract_abi,
+  //   address: contract_address,
+  //   functionName: "withdrawableROI",
+  //   args: [address],
+  //   config,
+  // });
 
-  const withdrawableROIEth = withdrawableROI.data
-    ? formatEther(withdrawableROI.data as BigNumberish)
-    : 0;
+  // const withdrawableROIEth = withdrawableROI.data
+  //   ? formatEther(withdrawableROI.data as BigNumberish)
+  //   : 0;
 
   const sliderData = [
     {
@@ -134,10 +134,10 @@ const Slider = () => {
       value: stakedUSDTEth,
       funName: "Staked USDT",
     },
-    {
-      value: withdrawableROIEth,
-      funName: "With Drawable ROI",
-    },
+    // {
+    //   value: withdrawableROIEth,
+    //   funName: "With Drawable ROI",
+    // },
   ];
 
   return (
