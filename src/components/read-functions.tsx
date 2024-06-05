@@ -169,7 +169,7 @@ const Slider = () => {
         {sliderData.map((e, i) => (
           <>
             <SwiperSlide key={i}>
-              <div  key={i} className="card">
+              <div key={i} className="card">
                 <div className="card-body">
                   <div className="d-flex align-items-center justify-content-between flex-column h-100">
                     <h6 className="slide-number">{e.value}</h6>

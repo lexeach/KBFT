@@ -18,14 +18,11 @@ import AllReadInfo from "./all-read-fun";
 
 const WriteAbleFun = () => {
   const { address } = useAccount();
-  // const [withDrawlVal, setWithDrawalVal] = useState(0);
-  // const [withDrawlROI, setWithDrawalROI] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [kbcVal, setKbcVal] = useState<number>(1);
   const [usdVal, setUsdVal] = useState<string>("");
   const [nodeQ_val, setNodeQ_val] = useState<number>(1);
-  const [nodePrice, setNodePrice] = useState<number>(100);
-
+  const [nodePrice, setNodePrice] = useState<number>(1000);
 
   const nodePrice_ = useReadContract({
     abi: contract_abi,
@@ -34,7 +31,7 @@ const WriteAbleFun = () => {
     // args: [address],
     config,
   });
-  
+
   const ownerWallet = useReadContract({
     abi: contract_abi,
     address: contract_address,
@@ -45,20 +42,19 @@ const WriteAbleFun = () => {
   // console.log("ownerWallet >> ", ownerWallet.data);
 
   useEffect(() => {
-    if(nodePrice_.data === undefined){
-      setNodePrice(100)
+    if (nodePrice_.data === undefined) {
+      setNodePrice(1000);
       if (address && ownerWallet.data === address) {
         setIsOwner(true);
       }
     } else {
-      const currentNodePrice = Number(nodePrice_.data)
-      setNodePrice(currentNodePrice)
+      const currentNodePrice = Number(nodePrice_.data);
+      setNodePrice(currentNodePrice);
       if (address && ownerWallet.data === address) {
         setIsOwner(true);
       }
     }
-  },[]);
-
+  }, []);
 
   const formItemLayout = {
     labelCol: { span: 24 },
@@ -74,7 +70,7 @@ const WriteAbleFun = () => {
 
   const BalanceOfKBC_WBNB = useReadContract({
     abi: contract_abi_stabel_coin_usdt,
-    address: '0xE1e61dD8DF8bbF75935fe04Dc214c6d517fc3622',
+    address: "0xE1e61dD8DF8bbF75935fe04Dc214c6d517fc3622",
     functionName: "balanceOf",
     args: [contract_price_pool],
     config,
@@ -88,14 +84,13 @@ const WriteAbleFun = () => {
     config,
   });
 
-
   const USD_price = check_usd_price(
     BalanceOfKBC_WBNB.data as bigint,
     BalanceOfStableCoin.data as bigint
   );
   useEffect(() => {
     setUsdVal(USD_price.toString());
-   }, [BalanceOfKBC_WBNB.data, BalanceOfStableCoin.data]);
+  }, [BalanceOfKBC_WBNB.data, BalanceOfStableCoin.data]);
 
   // register function start
   type RegistrationValues = {
@@ -104,7 +99,6 @@ const WriteAbleFun = () => {
   };
 
   const onFinishReg = async (values: RegistrationValues) => {
-
     const payableVal = Number(usdVal) * kbcVal;
     const node_quantity = kbcVal / 100;
 
@@ -323,7 +317,10 @@ const WriteAbleFun = () => {
               </div>
               <p>
                 <span className="clr-base">Node Quantity:</span>
-                <span className="kbc-val"> {kbcVal ? kbcVal / nodePrice : 0}</span>
+                <span className="kbc-val">
+                  {" "}
+                  {kbcVal ? kbcVal / nodePrice : 0}
+                </span>
               </p>
             </div>
             <div className="swap-head text-center reg-tag">Register</div>
@@ -342,13 +339,12 @@ const WriteAbleFun = () => {
                     rules={[
                       {
                         required: true,
-                        message:
-                          `Please input a valid node quantity (multiple of ${nodePrice})!`,
+                        message: `Please input a valid node quantity (multiple of ${nodePrice})!`,
                       },
                       {
                         validator: (rule, value) => {
-                          console.log('--', rule);
-                          
+                          console.log("--", rule);
+
                           if (value && value % nodePrice !== 0) {
                             return Promise.reject(
                               `Please enter a multiple of ${nodePrice}`
@@ -434,190 +430,191 @@ const WriteAbleFun = () => {
               </div>
             </div>
           </div>
-       )}
+        )}
 
         {/* Set Board Pool Address  */}
 
         {isOwner && (
-        <div className="col-lg-6">
-          <div className="swap-wrap p-5">
-            <div className="swap-head text-center">
-              Set Board <span className="text-warning">Pool Addrss</span>
-            </div>
-            <div className="swap">
-              <div className="swap-box">
-                <Form
-                  {...formItemLayout}
-                  name="setBoardPoolAddress"
-                  onFinish={onFinishsetBoardPoolAddress}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="Address"
-                    name="Address"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your Address!",
-                      },
-                    ]}
-                    className="node-title"
-                  >
-                    <Input className="input_filed" placeholder="Address" />
-                  </Form.Item>
-                  <Form.Item className="text-center">
-                    <Button className="submit-btn" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
-            </div>
-          </div>
-        </div>
-          )}
-
-        {/* set Liquidity PoolAddress */}
-        {isOwner && (
-        <div className="col-lg-6">
-          <div className="swap-wrap p-5">
-            <div className="swap-head text-center">
-              Set Liquidity <span className="text-warning">Pool Addrss</span>
-            </div>
-            <div className="swap">
-              <div className="swap-box">
-                <Form
-                  {...formItemLayout}
-                  name="liquidity"
-                  onFinish={onFinishsetLiquidityPoolAddress}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="Address"
-                    name="Address"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your Address!",
-                      },
-                    ]}
-                    className="node-title"
-                  >
-                    <Input className="input_filed" placeholder="Address" />
-                  </Form.Item>
-                  <Form.Item className="text-center">
-                    <Button className="submit-btn" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
-            </div>
-          </div>
-        </div>
-         )}
-
-        {/* set RoundCloser Address  */}
-        {isOwner && (
-        <div className="col-lg-6">
-          <div className="swap-wrap p-5">
-            <div className="swap-head text-center">
-              Set RoundCloser <span className="text-warning"> Addrss</span>
-            </div>
-            <div className="swap">
-              <div className="swap-box">
-                <Form
-                  {...formItemLayout}
-                  name="roundcloser"
-                  onFinish={onFinishsetRoundCloserAddress}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="Address"
-                    name="Address"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your Address!",
-                      },
-                    ]}
-                    className="node-title"
-                  >
-                    <Input className="input_filed" placeholder="Address" />
-                  </Form.Item>
-                  <Form.Item className="text-center">
-                    <Button className="submit-btn" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
-            </div>
-          </div>
-        </div>
-        )} 
-
-        {/* set global Insurance Address (0x2fc3dff0)  */}
-        {isOwner && (
-        <div className="col-lg-6">
-          <div className="swap-wrap p-5">
-            <div className="swap-head text-center">
-              Set Global Insurance <span className="text-warning"> Addrss</span>
-            </div>
-            <div className="swap">
-              <div className="swap-box">
-                <Form
-                  {...formItemLayout}
-                  name="globalInsuranceAddress"
-                  onFinish={onFinishsetGlobalInsuranceAddress}
-                  autoComplete="off"
-                >
-                  <Form.Item
-                    label="Address"
-                    name="Address"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your Address!",
-                      },
-                    ]}
-                    className="node-title"
-                  >
-                    <Input className="input_filed" placeholder="Address" />
-                  </Form.Item>
-
-                  <Form.Item className="text-center">
-                    <Button className="submit-btn" htmlType="submit">
-                      Submit
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </div>
-            </div>
-          </div>
-        </div>
-           )} 
-
-        {/* withDrawal ROI  */}
-        {/* {isOwner && ( */}
           <div className="col-lg-6">
             <div className="swap-wrap p-5">
-              <div className="swap-head text-center">Withdraw ROI</div>
-              <div className="swap h-100">
+              <div className="swap-head text-center">
+                Set Board <span className="text-warning">Pool Addrss</span>
+              </div>
+              <div className="swap">
                 <div className="swap-box">
-                  <div className="pay text-center mt-5">
-                    <Button
-                      onClick={withDrawRoiFun}
-                      className="submit-btn"
-                      htmlType="submit"
+                  <Form
+                    {...formItemLayout}
+                    name="setBoardPoolAddress"
+                    onFinish={onFinishsetBoardPoolAddress}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      label="Address"
+                      name="Address"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your Address!",
+                        },
+                      ]}
+                      className="node-title"
                     >
-                      WithDraw
-                    </Button>
-                  </div>
+                      <Input className="input_filed" placeholder="Address" />
+                    </Form.Item>
+                    <Form.Item className="text-center">
+                      <Button className="submit-btn" htmlType="submit">
+                        Submit
+                      </Button>
+                    </Form.Item>
+                  </Form>
                 </div>
               </div>
             </div>
-            {isOwner && (
+          </div>
+        )}
+
+        {/* set Liquidity PoolAddress */}
+        {isOwner && (
+          <div className="col-lg-6">
+            <div className="swap-wrap p-5">
+              <div className="swap-head text-center">
+                Set Liquidity <span className="text-warning">Pool Addrss</span>
+              </div>
+              <div className="swap">
+                <div className="swap-box">
+                  <Form
+                    {...formItemLayout}
+                    name="liquidity"
+                    onFinish={onFinishsetLiquidityPoolAddress}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      label="Address"
+                      name="Address"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your Address!",
+                        },
+                      ]}
+                      className="node-title"
+                    >
+                      <Input className="input_filed" placeholder="Address" />
+                    </Form.Item>
+                    <Form.Item className="text-center">
+                      <Button className="submit-btn" htmlType="submit">
+                        Submit
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* set RoundCloser Address  */}
+        {isOwner && (
+          <div className="col-lg-6">
+            <div className="swap-wrap p-5">
+              <div className="swap-head text-center">
+                Set RoundCloser <span className="text-warning"> Addrss</span>
+              </div>
+              <div className="swap">
+                <div className="swap-box">
+                  <Form
+                    {...formItemLayout}
+                    name="roundcloser"
+                    onFinish={onFinishsetRoundCloserAddress}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      label="Address"
+                      name="Address"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your Address!",
+                        },
+                      ]}
+                      className="node-title"
+                    >
+                      <Input className="input_filed" placeholder="Address" />
+                    </Form.Item>
+                    <Form.Item className="text-center">
+                      <Button className="submit-btn" htmlType="submit">
+                        Submit
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* set global Insurance Address (0x2fc3dff0)  */}
+        {isOwner && (
+          <div className="col-lg-6">
+            <div className="swap-wrap p-5">
+              <div className="swap-head text-center">
+                Set Global Insurance{" "}
+                <span className="text-warning"> Addrss</span>
+              </div>
+              <div className="swap">
+                <div className="swap-box">
+                  <Form
+                    {...formItemLayout}
+                    name="globalInsuranceAddress"
+                    onFinish={onFinishsetGlobalInsuranceAddress}
+                    autoComplete="off"
+                  >
+                    <Form.Item
+                      label="Address"
+                      name="Address"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your Address!",
+                        },
+                      ]}
+                      className="node-title"
+                    >
+                      <Input className="input_filed" placeholder="Address" />
+                    </Form.Item>
+
+                    <Form.Item className="text-center">
+                      <Button className="submit-btn" htmlType="submit">
+                        Submit
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* withDrawal ROI  */}
+        {/* {isOwner && ( */}
+        <div className="col-lg-6">
+          <div className="swap-wrap p-5">
+            <div className="swap-head text-center">Withdraw ROI</div>
+            <div className="swap h-100">
+              <div className="swap-box">
+                <div className="pay text-center mt-5">
+                  <Button
+                    onClick={withDrawRoiFun}
+                    className="submit-btn"
+                    htmlType="submit"
+                  >
+                    WithDraw
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {isOwner && (
             <div className="swap-wrap p-5">
               <div className="swap-head text-center">Close Round</div>
               <div className="swap h-100">
@@ -634,8 +631,8 @@ const WriteAbleFun = () => {
                 </div>
               </div>
             </div>
-               )}
-          </div>
+          )}
+        </div>
       </div>
     </>
   );

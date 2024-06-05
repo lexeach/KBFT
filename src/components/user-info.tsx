@@ -16,7 +16,6 @@ const UserInfo = () => {
     config,
   });
 
-
   const directIncome = useReadContract({
     abi: contract_abi,
     address: contract_address,
@@ -57,11 +56,9 @@ const UserInfo = () => {
     config,
   });
 
-
   let userDetail: bigint[] = [];
   userDetail = userData?.data as bigint[];
   const userId = userDetail ? userDetail[1] : 0;
-  console.log("Its calling as User Info: ", userDetail);
   const userDetail_arr = [
     {
       id: "1",
@@ -76,12 +73,12 @@ const UserInfo = () => {
     {
       id: "3",
       name: "ownNode",
-      value: userDetail ? formatEther(userDetail[3]) : 0,
+      value: userDetail ? Number(userDetail[3]) : 0,
     },
     {
       id: "4",
       name: "At Price",
-      value: userDetail ? formatEther(userDetail[4]) : 0,
+      value: userDetail ? parseFloat(formatEther(userDetail[4])).toFixed(4) : 0,
     },
     {
       id: "5",
@@ -91,22 +88,24 @@ const UserInfo = () => {
     {
       id: "6",
       name: "Income",
-      value: userDetail ? formatEther(userDetail[6]) : 0,
+      value: userDetail ? parseFloat(formatEther(userDetail[6])).toFixed(4) : 0,
     },
     {
       id: "7",
       name: "Level Income Received",
-      value: userDetail ? formatEther(userDetail[7]) : 0,
+      value: userDetail ? Number(userDetail[7]) : 0,
     },
     {
       id: "8",
       name: "Taken ROI",
-      value: userDetail ? formatEther(userDetail[8]) : 0,
+      value: userDetail ? parseFloat(formatEther(userDetail[8])).toFixed(4) : 0,
     },
     {
       id: "9",
       name: "Stake Times",
-      value: userDetail ? formatEther(userDetail[9]) : 0,
+      value: userDetail
+        ? dayjs(Number(userDetail[9]) * 1000).format("DD-MMM-YYYY")
+        : "DD-MMM-YYYY",
     },
     {
       id: "10",
@@ -116,7 +115,9 @@ const UserInfo = () => {
     {
       id: "11",
       name: "Direct Income",
-      value: directIncome.data ? formatEther(directIncome.data  as BigNumberish) : 0,
+      value: directIncome.data
+        ? parseFloat(formatEther(directIncome.data as BigNumberish)).toFixed(4)
+        : 0,
     },
     {
       id: "12",
@@ -132,14 +133,20 @@ const UserInfo = () => {
       // value: regTime.data ? regTime.data : 0,
     },
     {
-      id: '14',
+      id: "14",
       name: "Taken Round",
-      value: takenRound.data ? takenRound.data : 0,
+      value: takenRound.data
+        ? parseFloat(formatEther(takenRound.data.toString())).toFixed(4)
+        : 0,
     },
     {
-      id: '15',
+      id: "15",
       name: "Withdrawable ROI",
-      value: withdrawableROI.data ? formatEther(withdrawableROI.data  as BigNumberish) : 0,
+      value: withdrawableROI.data
+        ? parseFloat(formatEther(withdrawableROI.data as BigNumberish)).toFixed(
+            4
+          )
+        : 0,
     },
   ];
 
@@ -188,7 +195,7 @@ const UserInfo = () => {
       level: "Level 1",
       team: userDetail ? Number(userDetail[5]) : 0,
       income: level1Income
-        ? formatEther(level1Income[0].toString()) + " USDT"
+        ? formatEther(level1Income.toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -196,7 +203,7 @@ const UserInfo = () => {
       level: "Level 2",
       team: levelsDetails ? levelsDetails[0].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[0].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[0].toString()) + " USDT"
         : 0 + " USDT",
     },
 
@@ -205,7 +212,7 @@ const UserInfo = () => {
       level: "Level 3",
       team: levelsDetails ? levelsDetails[1].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[1].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[1].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -213,7 +220,7 @@ const UserInfo = () => {
       level: "Level 4",
       team: levelsDetails ? levelsDetails[2].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[2].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[2].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -221,7 +228,7 @@ const UserInfo = () => {
       level: "Level 5",
       team: levelsDetails ? levelsDetails[3].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[3].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[3].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -229,7 +236,7 @@ const UserInfo = () => {
       level: "Level 6",
       team: levelsDetails ? levelsDetails[4].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[4].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[4].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -237,7 +244,7 @@ const UserInfo = () => {
       level: "Level 7",
       team: levelsDetails ? levelsDetails[5].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[5].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[5].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -245,7 +252,7 @@ const UserInfo = () => {
       level: "Level 8",
       team: levelsDetails ? levelsDetails[6].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[6].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[6].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -253,7 +260,7 @@ const UserInfo = () => {
       level: "Level 9",
       team: levelsDetails ? levelsDetails[7].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[7].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[7].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -261,7 +268,7 @@ const UserInfo = () => {
       level: "Level 10",
       team: levelsDetails ? levelsDetails[8].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[8].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[8].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -269,7 +276,7 @@ const UserInfo = () => {
       level: "Level 11",
       team: levelsDetails ? levelsDetails[9].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[9].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[9].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -277,7 +284,7 @@ const UserInfo = () => {
       level: "Level 12",
       team: levelsDetails ? levelsDetails[10].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[10].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[10].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -285,7 +292,7 @@ const UserInfo = () => {
       level: "Level 13",
       team: levelsDetails ? levelsDetails[11].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[11].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[11].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -293,7 +300,7 @@ const UserInfo = () => {
       level: "Level 14",
       team: levelsDetails ? levelsDetails[12].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[12].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[12].toString()) + " USDT"
         : 0 + " USDT",
     },
     {
@@ -301,7 +308,7 @@ const UserInfo = () => {
       level: "Level 15",
       team: levelsDetails ? levelsDetails[13].toString() : 0,
       income: levelsIncomeDetails
-        ? levelsIncomeDetails[13].toString() + " USDT"
+        ? formatEther(levelsIncomeDetails[13].toString()) + " USDT"
         : 0 + " USDT",
     },
   ];

@@ -1281,11 +1281,13 @@ export const contract_abi_bnb_kbc1 = [
 
 
 export const contract_price_pool1 = '0x75221506B9FC53fDdF3e516017926cbA6b5B3fd6'
-export const contract_price_pool = '0x40a4D348489f804d71113Bdc20ff01577A1E2a37'
+export const contract_price_pool = '0x6989c5Ff1bB3bE6963b5cF7c054D94B33aF0f63E'
 
 
 //////// KBC contract
-export const contract_address = '0x323aBDa900B151aa4186CC91419A8df80d9D52E2'
+export const contract_address_ex = '0x323aBDa900B151aa4186CC91419A8df80d9D52E2'
+export const contract_address = '0xDf99D270952C99483e4e1E836e9636759884C1BC'
+
 export const contract_abi = [
     {
         "inputs": [
@@ -3010,7 +3012,8 @@ export const contract_abi_stabel_coin_usdt = [
   }
 ]
 
-export const contract_address_bnb_kbc = '0x40a4D348489f804d71113Bdc20ff01577A1E2a37'
+export const contract_address_bnb_kbc = '0xE1e61dD8DF8bbF75935fe04Dc214c6d517fc3622'
+// '0x40a4D348489f804d71113Bdc20ff01577A1E2a37'
 export const contract_abi_bnb_kbc = [
   {
       "inputs": [],

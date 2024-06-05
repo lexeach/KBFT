@@ -38,7 +38,6 @@ const AllReadInfo = () => {
     config,
   });
 
-
   const userProfitOnRound = useReadContract({
     abi: contract_abi,
     address: contract_address,
@@ -46,7 +45,6 @@ const AllReadInfo = () => {
     args: [currRound, address],
     config,
   });
-
 
   const usersOnRound = useReadContract({
     abi: contract_abi,
@@ -60,17 +58,29 @@ const AllReadInfo = () => {
     {
       id: 4,
       name: "PerNode Reward On Round",
-      value: perNodeRewardOnRound.data ? formatEther(perNodeRewardOnRound?.data  as BigNumberish) : 0,
+      value: perNodeRewardOnRound.data
+        ? parseFloat(
+            formatEther(perNodeRewardOnRound?.data as BigNumberish)
+          ).toFixed(4)
+        : 0,
     },
     {
       id: 6,
       name: "Reward On Round",
-      value: rewardOnRound.data ? formatEther(rewardOnRound?.data  as BigNumberish) : 0,
+      value: rewardOnRound.data
+        ? parseFloat(formatEther(rewardOnRound?.data as BigNumberish)).toFixed(
+            4
+          )
+        : 0,
     },
     {
       id: 9,
       name: "User ProfitOnRound",
-      value: userProfitOnRound.data ? formatEther(userProfitOnRound?.data  as BigNumberish) : 0,
+      value: userProfitOnRound.data
+        ? parseFloat(
+            formatEther(userProfitOnRound?.data as BigNumberish)
+          ).toFixed(4)
+        : 0,
     },
     {
       id: 10,
